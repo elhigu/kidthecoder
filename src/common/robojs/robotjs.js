@@ -1,5 +1,13 @@
-jqLite(document).ready(function() {
-	var canvas = $("#canvas"), ctx = canvas[0].getContext("2d"); 
+angular.module( 'robojs.engine', ['robojs.robot-db'])
+
+.factory('robotEngine', function () {
+
+})
+;
+
+window.robojs_init = function(canvas) {
+
+	var ctx = canvas.getContext("2d"); 
 	var robots = [], bullets = [];
 	
 	console.log = function(){};
@@ -381,9 +389,7 @@ jqLite(document).ready(function() {
 		},
 	};
 	
-//	BattleManager.init(ctx, ["js/scan-bot.js"]);
-//	BattleManager.init(ctx, ["js/test-robot1.js", "js/test-robot2.js", "js/test-robot1.js", "js/test-robot2.js","js/test-robot1.js", "js/test-robot2.js", "js/test-robot1.js", "js/test-robot2.js"]);
 	BattleManager.init(ctx, ["js/scan-bot.js", "js/scan-bot.js", "js/scan-bot.js", "js/scan-bot.js"]);
 	BattleManager.run();
 	
-});
+};

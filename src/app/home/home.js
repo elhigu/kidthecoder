@@ -13,7 +13,8 @@
  * specified, as shown below.
  */
 angular.module( 'app.home', [
-  'ui.router.state'
+  'ui.router.state',
+  'common.ng-scope-element'
 ])
 
 /**
@@ -38,6 +39,12 @@ angular.module( 'app.home', [
  * And of course we define a controller for our route.
  */
 .controller( 'HomeCtrl', ['$scope', function HomeController( $scope ) {
+
+  // robojs thingy should be written to directive...
+  $scope.init = function (canvas) {
+    window.robojs_init(canvas[0]);
+  };
+
 }])
 
 ;
