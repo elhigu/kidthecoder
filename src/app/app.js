@@ -2,14 +2,12 @@ angular.module( 'appMain', [
   'templates-app',
   'templates-common',
   'app.home',
-  'app.about',
-  'app.results',
   'ui.router.state',
   'ui.router'
 ])
 
 .config( ['$stateProvider', '$urlRouterProvider', function myAppConfig ( $stateProvider, $urlRouterProvider ) {
-  $urlRouterProvider.otherwise( '/about' );
+  $urlRouterProvider.otherwise( '/home' );
 }])
 
 .run( function run () {
