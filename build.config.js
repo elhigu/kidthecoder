@@ -53,7 +53,7 @@ module.exports = {
      */
     test_files: {
       js: [
-        'vendor/angular-mocks/angular-mocks.js'
+        'bower_components/angular-mocks/angular-mocks.js'
       ]
     },
 
@@ -77,19 +77,19 @@ module.exports = {
      */
     vendor_files: {
       js: [
-        'vendor/angular/angular.js',
-        'vendor/angular-bootstrap/ui-bootstrap-tpls.min.js',
-        'vendor/angular-ui-router/release/angular-ui-router.js',
-        'vendor/angular-ui-utils/modules/route/route.js',
-        'vendor/lodash/dist/lodash.js',
-        'vendor/moment/moment.js'
+        'bower_components/angular/angular.js',
+        'bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js',
+        'bower_components/angular-ui-router/release/angular-ui-router.js',
+        'bower_components/angular-ui-utils/modules/route/route.js',
+        'bower_components/lodash/dist/lodash.js',
+        'bower_components/moment/moment.js'
       ],
       css: [
       ],
       assets: [
       ],
       dirs: [
-        { src_path: 'vendor/bootstrap/fonts', dst_path: 'fonts' }
+        { src_path: 'bower_components/bootstrap/fonts', dst_path: 'fonts' }
       ]
     }
   }
