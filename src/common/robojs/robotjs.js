@@ -10,7 +10,7 @@ window.robojs_init = function(canvas) {
 	var ctx = canvas.getContext("2d"); 
 	var robots = [], bullets = [];
 	
-	console.log = function(){};
+	//console.log = function(){};
 	
 	// utility functions
 	var Utils = {
@@ -55,6 +55,10 @@ window.robojs_init = function(canvas) {
 				};
 			};
 
+			var post_message_function = function(message) {
+				console.log("Got message: ", message);
+			};
+
 			for(var w=0; w<workers.length; w++) {
 				var robot_id = "robot-" + w;
 				var robot = {
@@ -67,10 +71,13 @@ window.robojs_init = function(canvas) {
 					"radar_direction": 0,
 					"bullet": null,
 					"events": [],
-					"worker": new Worker(workers[w])
+					"worker": {
+						name : workers[w],
+						onmessage : create_on_message_handler(robot_id),
+						postMessage : post_message_function
+					},
 				};
 
-				robot["worker"].onmessage = create_on_message_handler(robot_id);
 				battle_manager._robots[robot_id] = robot;
 				
 				battle_manager._send(robot_id, {
@@ -126,20 +133,18 @@ window.robojs_init = function(canvas) {
 		_update: function () {
 			var battle_manager = this;
 			
-			_.each(battle_manager._robots, function (r) {
-				if(battle_manager._robots[r]["health"]<=0) {
-					delete battle_manager._robots[r];
+			_.each(battle_manager._robots, function (robot) {
+				if(robot["health"]<=0) {
+					delete battle_manager._robots[robot.id];
 					battle_manager._explosions.push({
-							"x": robot["x"],
-							"y": robot["y"],
-							"progress": 1
-						});
+						"x": robot["x"],
+						"y": robot["y"],
+						"progress": 1
+					});
 				}
 			});
 					
-			_.each(battle_manager._robots, function (r) {
-				var robot = battle_manager._robots[r];
-				
+			_.each(battle_manager._robots, function (robot) {				
 				var wall_collide = null;
 				var enemy_robot = null;
 				var robot_hit = null;
@@ -325,9 +330,9 @@ window.robojs_init = function(canvas) {
 			
 			function draw_robot(ctx, robot) {
 				var body = new Image(), turret = new Image(), radar = new Image();
-				body.src = "img/body.png";
-				turret.src = "img/turret.png";
-				radar.src = "img/radar.png";
+				body.src = "assets/robojs/img/body.png";
+				turret.src = "assets/robojs/img/turret.png";
+				radar.src = "assets/robojs/img/radar.png";
 				
 				ctx.drawImage(body, -18, -18, 36, 36);
 				ctx.rotate(Utils.degree2radian(robot["turret_direction"]));
