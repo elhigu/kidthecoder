@@ -2,6 +2,17 @@ angular.module( 'robojs.base-robot', [])
 
 .config(['$provide', function($provide) {
 
+	// TODO: robot system would be better where you just
+	//       set speed [-1.0, 1] for scanner, turret and
+	//       hull rotation and events will tell where robot
+	//       is at that time.
+	//       callbacks tell if scanner found robot and
+	//       allows to check how log is coolout period
+	//       scanner could also tell exact place of seen robot
+	//       (this allows to keep track of its speed etc)
+	//       also global clock should be exposed and maybe 
+	//       fire speed or top angle if one would like to do 3d :)
+
 	var BaseRobot = {
 		_callback_counter: 0,
 		_callback_status: {},
@@ -59,19 +70,16 @@ angular.module( 'robojs.base-robot', [])
 				"signal": "SHOOT"
 			});
 		},
-		_receive: function(msg) {
-			var msg_obj = JSON.parse(msg);
-			
+		_receive: function(msg_obj) {
 			switch(msg_obj["signal"]) {
 				case "CALLBACK":
-					var callbacks = this._callback_status[msg_obj["callback_id"]];				
+					var callbacks = msg_obj["callback"];				
 					if(callbacks) {
 						var callback = callbacks[msg_obj["status"]];
 						if(callback) {
 							callback();
 							
 						}
-						delete this._callback_status[msg_obj["callback_id"]];
 					}
 					break;
 				case "INFO":
@@ -83,40 +91,24 @@ angular.module( 'robojs.base-robot', [])
 					this.y = msg_obj["y"];
 					break;
 				case "RUN":
-					this._run();
+					this._run(this);
 					break;
 			}
 		},
 
 		_send: function(msg_obj, callback) {		
 			var callback_id = this._callback_counter++;
-			msg_obj["callback_id"] = callback_id;
-			var msg = JSON.stringify(msg_obj);
-			
-			this._callback_status[callback_id] = callback;
-			
-			postMessage(msg);
+			msg_obj["callback"] = callback;			
+			this.postMessage(msg_obj);
 		},
-		
-		_run: function() {
-			var base_robot = this;
-			this.run();
-			/*
+	
+		_run: function(robot) {
 			setTimeout(function() {
-				base_robot._run();
-			}, 1);
-			*/
-		},
-
-		run: function() {},
+				robot.run();
+			}, 0);
+		}
 	};
 
-    $provide.value('BaseRobot', BaseRobot);
-
-	// hack to enable onmessage during migration...
-	window.onmessage = function(e) {
-		console.log("This really cannot work like this..");
-		BaseRobot._receive(e.data);
-	};
+    $provide.value('RobotBody', BaseRobot);
 }]) 
 ;

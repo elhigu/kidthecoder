@@ -1,4 +1,4 @@
-angular.module( 'robojs.test-robot2', ['robojs.base-robot'])
+angular.module( 'robojs.test-robot2', [])
 
 .config(['$provide', 'BaseRobot', function($provide, BaseRobot) {
 	console.log("Base robot found", BaseRobot);

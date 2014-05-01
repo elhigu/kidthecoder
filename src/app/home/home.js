@@ -14,7 +14,8 @@
  */
 angular.module( 'app.home', [
   'ui.router.state',
-  'common.ng-scope-element'
+  'common.ng-scope-element',
+  'robojs.engine'
 ])
 
 /**
@@ -38,11 +39,11 @@ angular.module( 'app.home', [
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'HomeCtrl', ['$scope', function HomeController( $scope ) {
+.controller( 'HomeCtrl', ['$scope', 'robotGame', function HomeController( $scope, robotGame ) {
 
   // robojs thingy should be written to directive...
   $scope.init = function (canvas) {
-    window.robojs_init(canvas[0]);
+    robotGame.init(canvas[0]);
   };
 
 }])
