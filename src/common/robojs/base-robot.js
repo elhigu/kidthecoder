@@ -103,6 +103,7 @@ angular.module( 'robojs.base-robot', [])
 		},
 	
 		_run: function(robot) {
+			console.log("****** Scheduling run for: ", robot.id); 
 			setTimeout(function() {
 				robot.run();
 			}, 0);

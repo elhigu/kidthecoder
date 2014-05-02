@@ -1,9 +1,9 @@
 angular.module( 'robojs.robot-db', [
 	'robojs.base-robot',
-	'robojs.scan-robot'
-//	'robojs.sitting-duck-robot',
-//	'robojs.test-robot1',
-//	'robojs.test-robot2'
+	'robojs.scan-robot',
+	'robojs.sitting-duck-robot',
+	'robojs.test-robot1',
+	'robojs.test-robot2'
 	])
 
 .factory( 'robotDb', [ '$injector', 'RobotBody', function ($injector, RobotBody) {	

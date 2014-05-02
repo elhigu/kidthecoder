@@ -3,8 +3,9 @@ angular.module( 'robojs.scan-robot', [] )
 .config(['$provide', function($provide) {
     $provide.value('ScanBot', {
 		run : function() {
+			console.log("=============== ScanBot run!");
+
 			var robot = this;
-			console.log("Started run for", robot.id);
 
 			robot.shoot();
 			
@@ -15,7 +16,6 @@ angular.module( 'robojs.scan-robot', [] )
 					robot.turn_right(Math.random()*90, {
 						DONE: function() {
 							robot.shoot();
-							console.log("Calling run from:", robot.id);
 							robot._run(robot);
 						}
 					}); 
@@ -24,11 +24,9 @@ angular.module( 'robojs.scan-robot', [] )
 					robot.shoot();
 					robot.move_backward(100, {
 						DONE: function() {
-							console.log("Calling run from:", robot.id);
 							robot._run(robot);
 						},
 						WALL_COLLIDE: function() {
-							console.log("Calling run from:", robot.id);
 							robot._run(robot);
 						}
 					});
@@ -37,7 +35,6 @@ angular.module( 'robojs.scan-robot', [] )
 					robot.turn_left(180, {
 						DONE: function() {
 							robot.shoot();
-							console.log("Calling run from:", robot.id);
 							robot._run(robot);
 						}
 					});

@@ -1,27 +1,15 @@
-angular.module( 'robojs.sitting-duck-robot', ['robojs.base-robot'])
+angular.module( 'robojs.sitting-duck-robot', [])
 
-.config(['$provide', 'BaseRobot', function($provide, BaseRobot) {
-    $provide.value('SittingDuckBot', _.extend(_.extend({}, BaseRobot), {
+.config(['$provide', function($provide) {
+    $provide.value('SittingDuckBot', {
 		run : function() {
+			console.log("=============== Sitter run!");
 			var robot = this;
 
 			robot.turn_left(20, function() {
-				robot._run();
+				robot._run(robot);
 			});
 		}
-	}))
-	;
+	});
 }])
 ;
-
-/*
-SittingDuckBot = BaseRobot;
-
-SittingDuckBot.run = function() {
-	var robot = this;
-
-	robot.turn_left(20, function() {
-		robot._run();
-	});
-};
-*/

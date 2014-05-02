@@ -6,7 +6,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			var ctx = canvas.getContext("2d"); 
 			var robots = [], bullets = [];
 			
-			//console.log = function(){};
+			// console.log = function(){};
 			
 			// utility functions
 			var Utils = {
@@ -401,7 +401,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 				},
 			};
 			
-			BattleManager.init(ctx, ["ScanBot", "ScanBot", "ScanBot", "ScanBot"]);
+			BattleManager.init(ctx, ["ScanBot", "ScanBot", "TestBot1", "TestBot2", "SittingDuckBot"]);
 			BattleManager.run();
 		}
 	};
