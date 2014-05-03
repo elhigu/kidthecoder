@@ -45,11 +45,8 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 					var battle_manager = this;
 					battle_manager._ctx = ctx;
 					
-					var create_on_message_handler = function (robot_id) {
-						return function(e) {
-							console.log("Get message from", robot_id);
-							battle_manager._receive(robot_id, e);
-						};
+					var postMessage = function (robot_id, msg) {
+						battle_manager._receive(robot_id, msg);
 					};
 
 					for(var w=0; w<workers.length; w++) {
@@ -67,7 +64,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 							"worker": robotDb.getRobot(workers[w])
 						};
 	
-						robot["worker"].postMessage = create_on_message_handler(robot_id);
+						robot["worker"].postMessage = postMessage;
 						robot["worker"].id = robot_id;
 
 						battle_manager._robots[robot_id] = robot;

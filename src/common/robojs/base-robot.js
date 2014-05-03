@@ -96,10 +96,9 @@ angular.module( 'robojs.base-robot', [])
 			}
 		},
 
-		_send: function(msg_obj, callback) {		
-			var callback_id = this._callback_counter++;
+		_send: function(msg_obj, callback) {
 			msg_obj["callback"] = callback;			
-			this.postMessage(msg_obj);
+			this.postMessage(this.id, msg_obj);
 		},
 	
 		_run: function(robot) {
