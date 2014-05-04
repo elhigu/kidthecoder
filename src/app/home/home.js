@@ -39,15 +39,32 @@ angular.module( 'app.home', [
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'HomeCtrl', ['$scope', 'robotGame', function HomeController( $scope, robotGame ) {
+.controller( 'HomeCtrl', ['$scope', 'robotGame', 'robotDb', function HomeController( $scope, robotGame, robotDb ) {
 
   // robojs thingy should be written to directive...
   $scope.init = function (canvas) {
     robotGame.init(canvas[0]);
   };
 
+  $scope.userBot = 
+    'console.log("============== COWABUNGA!");\n' +
+    'var robot = this;\n' +
+    'robot.shoot();\n' +
+    'robot.turn_left(1, {\n' +
+    '  DONE: function() { robot._run(robot); }\n' +
+    '});\n';
+
   $scope.$watch('userBot', function () { 
-    console.log("Code changed!");
+    try {
+      console.log("Code changed!");
+      bot = new Function($scope.userBot);
+      $scope.compileStatus = true;
+      console.log("All good.");
+      robotDb.save("UserBot", $scope.userBot);
+    } catch(e) {
+      $scope.compileStatus = false;
+      console.log(e);
+    }
   });
 
 }])

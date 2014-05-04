@@ -1,13 +1,8 @@
-<textarea mg-model="userBot">
-function() {
-	console.log("=============== COWABUNGA!");
-	var robot = this;
-	robot.shoot();
-	robot.turn_left(1, {
-		DONE: function() { robot._run(robot); }
-	});
-}
-</textarea>
-
-<canvas ng-scope-element="canvasElement" style="border: 1px solid black;" width="800" height="400" id="canvas"></canvas>
-<a ng-click="init(canvasElement)">Init game</a>
+<div class="col-md-4"> 
+	<textarea ng-model="userBot" cols="80" rows="20">
+	</textarea>
+</div>
+<div class="col-md-8"> 
+	<canvas ng-scope-element="canvasElement" style="border: 1px solid black;" width="800" height="400" id="canvas"></canvas>
+	<a ng-click="init(canvasElement)">Init game</a>
+</div>

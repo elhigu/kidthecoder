@@ -399,6 +399,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			var robot_list = _.times(2, function () { 
 				return _.sample(robotDb.listRobots());
 			});
+			robot_list.unshift('UserBot');
 			console.log("Selecting robots:", robot_list);
 			BattleManager.init(ctx, robot_list);
 			BattleManager.run();

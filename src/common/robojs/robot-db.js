@@ -30,17 +30,21 @@ angular.module( 'robojs.robot-db', [
 
 		save : function (name, code) {
 			console.log("Saving to local storage not implemented..");		
-			var bot = null;
+			var runner = null;
 			try {
-				bot = new Function(code);
-			} catch(exception) {
-				error = exception;
-				console.log(error);
+				runner = new Function(code);
+			} catch(e) {
+				runner = null;
+				console.log(e);
 			}
-			if (!error) {
-				this._db[name] =  new Function(code);
+			if (runner) {
+				var brains = {
+					run: runner
+				};
+				var robot = _.extend(_.extend({}, RobotBody), brains);
+				db[name] = robot;
 			}
-			return !error;
+			return runner !== null;
         }
 	};
 }])	
