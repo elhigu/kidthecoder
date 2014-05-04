@@ -46,6 +46,10 @@ angular.module( 'app.home', [
     robotGame.init(canvas[0]);
   };
 
+  $scope.$watch('userBot', function () { 
+    console.log("Code changed!");
+  });
+
 }])
 
 ;

@@ -1,2 +1,13 @@
+<textarea mg-model="userBot">
+function() {
+	console.log("=============== COWABUNGA!");
+	var robot = this;
+	robot.shoot();
+	robot.turn_left(1, {
+		DONE: function() { robot._run(robot); }
+	});
+}
+</textarea>
+
 <canvas ng-scope-element="canvasElement" style="border: 1px solid black;" width="800" height="400" id="canvas"></canvas>
 <a ng-click="init(canvasElement)">Init game</a>

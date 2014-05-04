@@ -5,9 +5,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 		init : function (canvas) {
 			var ctx = canvas.getContext("2d"); 
 			var robots = [], bullets = [];
-			
-			// console.log = function(){};
-			
+						
 			// utility functions
 			var Utils = {
 				degree2radian: function(a) {
@@ -398,8 +396,14 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 				},
 			};
 			
-			BattleManager.init(ctx, ["ScanBot", "ScanBot", "TestBot1", "TestBot2", "SittingDuckBot"]);
+			var robot_list = _.times(2, function () { 
+				return _.sample(robotDb.listRobots());
+			});
+			console.log("Selecting robots:", robot_list);
+			BattleManager.init(ctx, robot_list);
 			BattleManager.run();
+
+			console.log = function(){};
 		}
 	};
 }])

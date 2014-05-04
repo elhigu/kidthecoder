@@ -7,20 +7,41 @@ angular.module( 'robojs.robot-db', [
 	])
 
 .factory( 'robotDb', [ '$injector', 'RobotBody', function ($injector, RobotBody) {	
+	var db = {};
+
+	// init DB with hardcoded bots
+	_.each(["ScanBot", "TestBot1", "TestBot2", "SittingDuckBot"], function (name) {
+		var brains = $injector.get(name);
+		var robot = _.extend(_.extend({}, RobotBody), brains);
+		db[name] = robot;
+	});
+
 	return {
+		_db : db,
+
 		getRobot : function(name) {
-			var brains = $injector.get(name);
-			var robot = _.extend(_.extend({}, RobotBody), brains);
-			return robot;
+			return this._db[name];
 		},
 
 		listRobots : function () {
-			return ['a', 'b'];
+			console.log("Robot List", this._db);
+			return _.keys(this._db);
 		},
 
 		save : function (name, code) {
-			console.log("Saving to local storage not implemented..");
-		}
+			console.log("Saving to local storage not implemented..");		
+			var bot = null;
+			try {
+				bot = new Function(code);
+			} catch(exception) {
+				error = exception;
+				console.log(error);
+			}
+			if (!error) {
+				this._db[name] =  new Function(code);
+			}
+			return !error;
+        }
 	};
 }])	
 ;
