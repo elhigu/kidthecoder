@@ -25,7 +25,20 @@ angular.module( 'gameframe.kickstart', [
  * And of course we define a controller for our route.
  */
 .controller( 'KickstartCtrl', ['$scope', 'levels', 'profiles', function KickstartController( $scope, levels, profiles ) {
+	$scope.profiles = profiles.list();
 
+	$scope.addProfile = function (name) { 
+		profiles.add(name);
+	};
+	$scope.deleteProfile = function (name) {
+		profiles.remove(name);
+	};
+	$scope.selectProfile = function (name) {
+		$scope.selectedProfile = profiles.get(name);
+	};
+	$scope.logOut = function () {
+		$scope.selectedProfile = null;
+	};
 }])
 
 ;

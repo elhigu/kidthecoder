@@ -1,10 +1,18 @@
-Login / profile select view I suppose
 
-Level select etc.
+<div ng-repeat="profile in profiles">
+	<a ng-click="selectProfile(profile)">{{profile}}</a>
+</div>
 
-Way to find out when level is completed.
+<div ng-show="selectedProfile">
+	{{selectedProfile}}
+	<a ng-click="logOut()">Log out</a>
 
-DSL to describe leveles....
+	Show levels according to status...
 
+	Load game
+
+	Wait results
+
+</div>
 
 <a ui-sref="home">Test game</a>
