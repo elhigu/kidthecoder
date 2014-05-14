@@ -1,6 +1,6 @@
 angular.module( 'gameframe.kickstart', [
 	'ui.router',
-	'gameframe.levels',
+	'gameframe.campaigns',
 	'gameframe.profiles'
 ])
 
@@ -24,7 +24,7 @@ angular.module( 'gameframe.kickstart', [
 /**
  * And of course we define a controller for our route.
  */
-.controller( 'KickstartCtrl', ['$scope', 'levels', 'profiles', function KickstartController( $scope, levels, profiles ) {
+.controller( 'KickstartCtrl', ['$scope', 'profiles', 'campaigns', function KickstartController( $scope, profiles, campaigns ) {
 	$scope.profiles = profiles.list();
 
 	$scope.addProfile = function (name) { 
@@ -39,6 +39,12 @@ angular.module( 'gameframe.kickstart', [
 	$scope.logOut = function () {
 		$scope.selectedProfile = null;
 	};
+
+	// if profile is selected show campaigns 
+	$scope.$watch('selectedProfile', function () {
+		$scope.campaigns = campaigns.list($scope.selectedProfile);
+	});
+
 }])
 
 ;
