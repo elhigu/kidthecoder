@@ -8,14 +8,15 @@
 	<a ng-click="logOut()">Log out</a>
 
 	<div ng-repeat="campaign in campaigns">
-		{{campaign}}
+		<a ng-click="selectCampaign(campaign)">{{campaign}}</a>
 	</div>
 
-	Show levels according to status...
-
-	Load game
-
-	Wait results
+	<div ng-show="selectedCampaign">	
+		Playing: {{selectedCampaign}} </br>
+		Show levels according to status...
+		Load game
+		Wait results
+	</div>
 
 </div>
 

@@ -45,6 +45,10 @@ angular.module( 'gameframe.kickstart', [
 		$scope.campaigns = campaigns.list($scope.selectedProfile);
 	});
 
+	$scope.selectCampaign = function (campaign) {
+		$scope.selectedCampaign = campaign;
+	};
+
 }])
 
 ;
