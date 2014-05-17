@@ -14,8 +14,17 @@
 	<div ng-show="selectedCampaign">	
 		Playing: {{selectedCampaign}} </br>
 		Show levels according to status...
-		Load game
-		Wait results
+		<div class="row">
+			<canvas ng-scope-element="gameCanvas"></canvas>
+		</div>
+		<div class="row">
+			<div class="span-md-6">
+				<textarea ng-model="aiCode"></textarea>
+			</div>
+			<div class="span-md-6">
+				This could be graphical editor.
+			</div>
+		</div>
 	</div>
 
 </div>
