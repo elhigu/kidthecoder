@@ -68,7 +68,7 @@ angular.module( 'gameframe.kickstart', [
 	$scope.startLevel = function () {
 		// start starts new game for canvas or if game is going on, 
 		// re-starts it and earlier game will be aborted
-		$scope.selectedGame.start($scope.aiCode, $scope.gameCanvas).win(function () {
+		$scope.selectedLevel.start($scope.aiCode, $scope.gameCanvas).win(function () {
 			console.log("You won!");
 		}).lose(function() {
 			console.log("You lose!");
