@@ -10,12 +10,16 @@ angular.module( 'gameframe.campaigns', ['gameframe.levels'])
 		{ 
 			name : "level 1",
 			game : "robot",
-			configuration : {}
+			configuration : {
+				robots : ['SittingDuckBot']
+			}
 		},
 		{ 
 			name : "level 2",
 			game : "robot",
-			configuration : {}
+			configuration : {
+				robots : ['TestBot1']				
+			}
 		}
 	];
 
@@ -27,6 +31,9 @@ angular.module( 'gameframe.campaigns', ['gameframe.levels'])
 	return {
 		list : function (profile) {
 			return ['one', 'two', 'three'];
+		},
+		level : function (levelName) {
+			return engines.get(levelName);
 		}
 	};
 }])

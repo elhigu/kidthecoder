@@ -77,7 +77,7 @@ angular.module( 'gameframe.kickstart', [
 		});
 	};
 	$scope.stopLevel = function () {
-		$scope.selectedGame.stop();
+		$scope.selectedLevel.stop();
 	};
 
 	// restart game if code is changed
