@@ -1,12 +1,21 @@
 angular.module( 'gameframe.profiles', [])
 
 .factory('profiles', [function () {
-	// slots maybe?
+
+	var baseProfile = {
+		getLevelCode : function (level) {
+			return "";
+		}
+	};			
+
+		
 	var profiles = {
 		'me' : { name : 'me' }, 
 		'mike' : { name : 'mike' }, 
-		'man' : { name : 'man' } 
+		'man' : { name : 'man' }
 	};
+
+
 
 	return {
 		list : function () {
@@ -16,7 +25,7 @@ angular.module( 'gameframe.profiles', [])
 			profiles[name] = {};
 		},
 		get : function (name) {
-			return profiles[name];
+			return _.extend(_.clone(profiles[name]), baseProfile);
 		}
 	};
 }])

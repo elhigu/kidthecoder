@@ -1,7 +1,8 @@
 angular.module( 'gameframe.kickstart', [
 	'ui.router',
 	'gameframe.campaigns',
-	'gameframe.profiles'
+	'gameframe.profiles',
+	'common.ng-scope-element'
 ])
 
 /**
@@ -45,6 +46,7 @@ angular.module( 'gameframe.kickstart', [
 		$scope.selectedProfile = null;
 	};
 	$scope.$watch('selectedProfile', function () {
+		console.log("Selected profile watch launch.");
 		$scope.campaigns = campaigns.list($scope.selectedProfile);
 	});
 
@@ -52,39 +54,42 @@ angular.module( 'gameframe.kickstart', [
 	 * Select campaign related callbacks
 	 */ 
 	$scope.selectCampaign = function (campaign) {
-		$scope.selectedCampaign = campaign;
+		$scope.selectedCampaign = campaigns.load(campaign);
 	};
 	$scope.$watch('selectedCampaign', function () {
-		$scope.levels = $scope.selectedCampaign.levels();
+		if ($scope.selectedCampaign) {
+			$scope.levels = $scope.selectedCampaign.levels();
+		}
 	});
 
 	/**
 	 * Start / end level etc.
 	 */
 	$scope.selectLevel = function (level) {
-		$scope.selectedLevel = level;
+		$scope.selectedLevel = $scope.selectedCampaign.load(level);
 		$scope.aiCode = $scope.selectedProfile.getLevelCode(level);
 	};
+
 	$scope.startLevel = function () {
-		// start starts new game for canvas or if game is going on, 
-		// re-starts it and earlier game will be aborted
-		$scope.selectedLevel.start($scope.aiCode, $scope.gameCanvas).win(function () {
-			console.log("You won!");
-		}).lose(function() {
-			console.log("You lose!");
-		}).abort(function () {
-			console.log("Aborted game.");
-		});
+		if ($scope.selectedLevel) {
+			// start starts new game for canvas or if game is going on, 
+			// re-starts it and earlier game will be aborted
+			$scope.selectedLevel.start($scope.aiCode, $scope.canvasElement).win(function () {
+				console.log("You won!");
+			}).lose(function() {
+				console.log("You lose!");
+			}).abort(function () {
+				console.log("Aborted game.");
+			});
+		}
 	};
 	$scope.stopLevel = function () {
 		$scope.selectedLevel.stop();
 	};
 
 	// restart game if code is changed
-	$scope.$watch('aiCode', function (newVal) {
-		if (_.isStr(newVal) && newVal.trim().length > 0) {
-			$scope.startGame();
-		}
+	$scope.$watch('aiCode', function (newVal) {		
+		$scope.startLevel();
 	});
 }])
 

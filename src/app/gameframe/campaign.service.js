@@ -2,21 +2,21 @@
  * This service takes care of storing game / campaign state  and how
  * it advances
  */
-angular.module( 'gameframe.campaigns', ['gameframe.levels'])
+angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 
-.factory('campaigns', ['levels', function (levels) {
-	// TODO: create data-model of campaign...
+.factory('campaigns', ['engines', function (engines) {
+	
 	var testLevels = [
 		{ 
 			name : "level 1",
-			game : "robot",
+			engine : "robot",
 			configuration : {
 				robots : ['SittingDuckBot']
 			}
 		},
 		{ 
 			name : "level 2",
-			game : "robot",
+			engine : "robot",
 			configuration : {
 				robots : ['TestBot1']				
 			}
@@ -24,16 +24,30 @@ angular.module( 'gameframe.campaigns', ['gameframe.levels'])
 	];
 
 	var campaign = {
-		name: "The only one.",
-		levels : _.pluck(testLevels, 'name')
+		name: function () { 
+			return "The only one.";
+		},
+		levels : function () {
+			console.log("Getting level names:", _.pluck(testLevels, 'name'));
+			return _.pluck(testLevels, 'name');
+		},
+		load : function (level) {
+			var levelConf = _.find(testLevels, { name: level});
+			return engines.load(levelConf);
+		}
 	};
 
+	var campaignDb = [campaign];
+
 	return {
+		// list campaigns available for profile
 		list : function (profile) {
-			return ['one', 'two', 'three'];
+			return _.map(campaignDb, function (camp) { return camp.name(); });
 		},
-		level : function (levelName) {
-			return engines.get(levelName);
+		load : function (campaign) {
+			return _.find(campaignDb, function (camp) {
+				return camp.name() == campaign;
+			});
 		}
 	};
 }])

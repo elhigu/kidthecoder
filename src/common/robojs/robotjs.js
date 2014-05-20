@@ -2,7 +2,34 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 
 .factory('robotGame', ['robotDb', function (robotDb) {
 	return {
-		init : function (canvas) {
+		init : function (conf) {
+			console.log("Going to initialize robot game", conf);
+			var theGame = null;
+
+			// main API for writing more game engines here
+			return {
+				start : function (code, canvas) {
+					console.log("Starting game with ", code, canvas);
+					// call original robot game init function
+					this._init(canvas, conf);
+					return this;
+				},
+				stop : function (cb) {
+					return this;
+				},
+				win : function (cb) {
+					return this;					
+				},
+				lose : function (cb) {
+					return this;					
+				},
+				abort : function (cb) {
+					return this;
+				}
+			};
+		},
+
+		_init : function (canvas, conf) {
 			var ctx = canvas.getContext("2d"); 
 			var robots = [], bullets = [];
 						
@@ -396,9 +423,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 				},
 			};
 			
-			var robot_list = _.times(2, function () { 
-				return _.sample(robotDb.listRobots());
-			});
+			var robot_list = conf.robots;
 			robot_list.unshift('UserBot');
 			console.log("Selecting robots:", robot_list);
 			BattleManager.init(ctx, robot_list);
