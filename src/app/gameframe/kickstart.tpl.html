@@ -3,7 +3,7 @@
 <div ng-repeat="profile in profiles">
 	<a ng-click="selectProfile(profile)">{{profile}}</a>
 </div>
-<div ng-if="selectedProfile">
+<div ng-show="selectedProfile">
 	{{selectedProfile}}
 	<a ng-click="logOut()">Log out</a>
 
@@ -12,8 +12,8 @@
 		<a ng-click="selectCampaign(campaign)">{{campaign}}</a>
 	</div>
 
-	<div ng-if="selectedCampaign">	
-		Playing: {{selectedCampaign}} </br>
+	<div ng-show="selectedCampaign">	
+		Playing: {{selectedCampaign.name()}} </br>
 		Show levels according to status...
 
 		<h3>Levels:</h3>
@@ -23,7 +23,11 @@
 
 		<div ng-show="selectedLevel">
 			<div class="row">
-				<canvas ng-scope-element="canvasElement" style="border: 1px solid black;" width="800" height="400" id="canvas"></canvas>
+				<canvas style="border: 1px solid black;" 
+					width="800" height="400" 
+					id="canvas" 
+					ng-scope-element="gameCanvas">
+				</canvas>
 			</div>
 			<div class="row">
 				<div class="span-md-6">

@@ -20,6 +20,13 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			configuration : {
 				robots : ['TestBot1']				
 			}
+		},
+		{ 
+			name : "level 3",
+			engine : "robot",
+			configuration : {
+				robots : ['TestBot1','TestBot2','ScanBot']				
+			}
 		}
 	];
 
