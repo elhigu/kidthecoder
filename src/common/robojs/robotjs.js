@@ -4,6 +4,9 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 
 	// robot game engine is basically this function
 	var robotGameEngine = function (canvas, conf) {
+
+		// TODO: if game already assigned to canvas tear it down... 
+		//       actually figure out how to stop game.
 		var ctx = canvas.getContext("2d"); 
 		var robots = [], bullets = [];
 					
@@ -398,7 +401,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 		};
 		
 		var robot_list = conf.robots;
-		// robot_list.unshift('UserBot');
+		robot_list.unshift('UserBot');
 		console.log("Selecting robots:", robot_list);
 		BattleManager.init(ctx, robot_list);
 		BattleManager.run();
@@ -414,6 +417,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			// main API for writing more game engines here
 			return {
 				start : function (code, canvas) {
+					robotDb.save('UserBot', code);
 					// TODO: if canvas already has game going on clean it up first
 					console.log("Starting game with ", code, canvas);
 					// call original robot game init function
