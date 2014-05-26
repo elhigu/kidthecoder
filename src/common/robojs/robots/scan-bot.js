@@ -3,7 +3,7 @@ angular.module( 'robojs.scan-robot', [] )
 .config(['$provide', function($provide) {
     $provide.value('ScanBot', {
 		run : function() {
-			console.log("=============== ScanBot run!");
+			// console.log("=============== ScanBot run!");
 
 			var robot = this;
 

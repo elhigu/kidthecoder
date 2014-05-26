@@ -5,8 +5,6 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 	// robot game engine is basically this function
 	var robotGameEngine = function (canvas, conf) {
 
-		// TODO: if game already assigned to canvas tear it down... 
-		//       actually figure out how to stop game.
 		var ctx = canvas.getContext("2d"); 
 		var robots = [], bullets = [];
 					
@@ -80,7 +78,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			},
 			
 			_receive: function(robot_id, msg_obj) {
-				console.log("Robot:", robot_id, "Got message:", msg_obj);
+				// console.log("Robot:", robot_id, "Got message:", msg_obj);
 				var battle_manager = this;
 				var robot = battle_manager._robots[robot_id];
 									
@@ -105,13 +103,25 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			run: function() {
 				var battle_manager = this;
 				
-				setInterval(function() {
+				this.runInterval = setInterval(function() {
 					battle_manager._run();
 				}, 5);
 				battle_manager._send_all({
 					"signal": "RUN"
 				});
 			},
+
+			stop: function () {
+				var battle_manager = this;
+				if (this.runInterval) {
+					clearInterval(this.runInterval);
+					this.runInterval = null;
+				}
+				_.each(battle_manager._robots, function (robot) {
+					delete battle_manager._robots[robot.id];
+				});
+			},
+
 			_run: function() {
 				var battle_manager = this;
 				battle_manager._update();
@@ -171,7 +181,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 								*/
 								
 								if(robot_hit) {
-									console.log("HIT!");
+									// console.log("HIT!");
 									enemy_robot["health"] -= 3;
 									battle_manager._explosions.push({
 										"x": enemy_robot["x"],
@@ -219,7 +229,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 								);
 							
 								if(wall_collide) {
-									console.log("wall " + robot["direction"] + " " + robot["x"] + " " + new_x + " " + wall_collide);
+									// console.log("wall " + robot["direction"] + " " + robot["x"] + " " + new_x + " " + wall_collide);
 									robot["health"] -= 1;
 									battle_manager._send(robot.id, {
 										"signal": "CALLBACK",
@@ -258,7 +268,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 								}
 							
 								if(event["progress"]>Math.abs(event["distance"])) {
-									console.log("move-over " + robot["id"]);
+									// console.log("move-over " + robot["id"]);
 									battle_manager._send(robot.id, {
 										"signal": "CALLBACK",
 										"callback": event["callback"],
@@ -400,13 +410,13 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			},
 		};
 		
-		var robot_list = conf.robots;
+		var robot_list = _.cloneDeep(conf.robots);
 		robot_list.unshift('UserBot');
 		console.log("Selecting robots:", robot_list);
 		BattleManager.init(ctx, robot_list);
 		BattleManager.run();
 
-		console.log = function(){};
+		return BattleManager;
 	};
 
 	return {
@@ -417,11 +427,15 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 			// main API for writing more game engines here
 			return {
 				start : function (code, canvas) {
-					robotDb.save('UserBot', code);
-					// TODO: if canvas already has game going on clean it up first
-					console.log("Starting game with ", code, canvas);
-					// call original robot game init function
-					robotGameEngine(canvas, conf);
+					if (robotDb.save('UserBot', code)) {
+						console.log("Starting game with ", code, canvas);
+						if (theGame !== null) {
+							theGame.stop();
+						}
+						theGame = robotGameEngine(canvas, conf);
+					} else {
+						console.log("Failed to start game.");
+					}
 					return this;
 				},
 				stop : function (cb) {

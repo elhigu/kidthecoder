@@ -3,7 +3,7 @@ angular.module( 'robojs.test-robot2', [])
 .config(['$provide', function($provide) {
     $provide.value('TestBot2', {
 		run : function() {
-			console.log("=============== Testbot2 run!");
+			// console.log("=============== Testbot2 run!");
 			var robot = this;
 			robot.turn_turret_right(90);
 			robot.move_forward(parseInt(Math.random()*robot.arena_width), {
