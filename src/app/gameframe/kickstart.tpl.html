@@ -1,45 +1,45 @@
+<div class="container">
+	<div class="row">
+		<div class="selectPlayer col-sm-4">
+			<h1>Player:</h1>
+			<div ng-repeat="profile in profiles">
+				<a ng-click="selectProfile(profile)">{{profile}}</a>
+			</div>
+		</div>
+		<div class="col-sm-4" ng-show="selectedProfile">
+			{{selectedProfile}}
+			<a ng-click="logOut()">Log out</a>
 
-<h1>Player:</h1>
-<div ng-repeat="profile in profiles">
-	<a ng-click="selectProfile(profile)">{{profile}}</a>
-</div>
-<div ng-show="selectedProfile">
-	{{selectedProfile}}
-	<a ng-click="logOut()">Log out</a>
-
-	<h2>Campaign:</h2>
-	<div ng-repeat="campaign in campaigns">
-		<a ng-click="selectCampaign(campaign)">{{campaign}}</a>
-	</div>
-
-	<div ng-show="selectedCampaign">	
-		Playing: {{selectedCampaign.name()}} </br>
-		Show levels according to status...
-
-		<h3>Levels:</h3>
-		<div ng-repeat="level in levels">
-			<a ng-click="selectLevel(level)">{{level}}</a>
+			<h2>Campaign:</h2>
+			<div ng-repeat="campaign in campaigns">
+				<a ng-click="selectCampaign(campaign)">{{campaign}}</a>
+			</div>
 		</div>
 
-		<div ng-show="selectedLevel">
-			<div class="row">
-				<canvas style="border: 1px solid black;" 
-					width="800" height="400" 
-					id="canvas" 
-					ng-scope-element="gameCanvas">
-				</canvas>
-			</div>
-			<div class="row">
-				<div class="span-md-6">
-					<textarea ng-model="aiCode"></textarea>
-				</div>
-				<div class="span-md-6">
-					This could be graphical editor.
-				</div>
+		<div class="col-sm-4" ng-show="selectedCampaign">	
+			Playing: {{selectedCampaign.name()}} </br>
+			Show levels according to status...
+
+			<h3>Levels:</h3>
+			<div ng-repeat="level in levels">
+				<a ng-click="selectLevel(level)">{{level}}</a>
 			</div>
 		</div>
 	</div>
-
+	<div class="row" ng-show="selectedLevel">
+		<div class="col-sm-6">
+			Add tab to switch between block and code editor
+			<textarea rows="20"
+				class="form-control" 
+				ng-model="aiCode">
+			</textarea>
+		</div>
+		<div class="col-sm-6">
+			<canvas style="width: 100%; border: 1px solid black;" 
+				width="800" height="400" 
+				id="canvas" 
+				ng-scope-element="gameCanvas">
+			</canvas>
+		</div>
+	</div>
 </div>
-
-<a ui-sref="home">Test game</a>

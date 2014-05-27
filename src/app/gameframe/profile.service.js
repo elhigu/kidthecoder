@@ -4,23 +4,19 @@ angular.module( 'gameframe.profiles', [])
 
   var baseProfile = {
     getLevelCode : function (level) {
-      return 'console.log("============== COWABUNGA!");\n' +
-        'var robot = this;\n' +
+      return 'var robot = this;\n' +
         'robot.shoot();\n' +
         'robot.turn_left(1, {\n' +
         '  DONE: function() { robot._run(robot); }\n' +
         '});\n';
     }
   };      
-
     
   var profiles = {
     'me' : { name : 'me' }, 
     'mike' : { name : 'mike' }, 
     'man' : { name : 'man' }
   };
-
-
 
   return {
     list : function () {

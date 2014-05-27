@@ -380,13 +380,11 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 					battle_manager._ctx.closePath();
 					
 					battle_manager._ctx.strokeText(robot["id"] + " (" + robot["health"] + ")", robot["x"]-20,robot["y"]+35);
-	//				/*
 					battle_manager._ctx.fillStyle = "green";
 					battle_manager._ctx.fillRect(robot["x"]-20,robot["y"]+35, robot["health"], 5);
 					battle_manager._ctx.fillStyle = "red";
 					battle_manager._ctx.fillRect(robot["x"]-20+robot["health"],robot["y"]+35, 25-robot["health"], 5);
 					battle_manager._ctx.fillStyle = "black";
-	//				*/
 				}
 				for(var e=0; e<battle_manager._explosions.length; e++) {
 					var explosion = battle_manager._explosions.pop();
