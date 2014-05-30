@@ -12,26 +12,98 @@ angular.module( 'gameframe.kickstart', [
  */
 .config(['$stateProvider', function config( $stateProvider ) {
   $stateProvider.state( 'kickstart', {
-    url: '/',
     views: {
       "main": {
-        templateUrl: 'gameframe/tpl/start.profile.tpl.html',
-        controller: 'KickstartProfileCtrl'
+        templateUrl: 'gameframe/tpl/start.layout.tpl.html',
+        controller: 'KickstartBaseCtrl'
       }
     }
   })
+  
   .state('kickstart.profile', {
+    url: '/',
+    views : {
+      "profileList" : {
+        templateUrl : 'gameframe/tpl/start.profile.list.tpl.html',
+        controller : 'KickstartProfileCtrl'
+      }
+    } 
+  })
+
+  .state('kickstart.profile.campaign', {
     url : 'profile/:profileId',
-    templateUrl : 'gameframe/tpl/start.campaign.tpl.html',
-    controller : 'KickstartCampaignCtrl'
-  });
+    views : {
+      "campaignList" : {
+        templateUrl : 'gameframe/tpl/start.campaign.list.tpl.html',
+        controller : 'KickstartCampaignCtrl'
+      }
+    }
+  })
+
+  .state('kickstart.profile.campaign.level', {
+    url : 'profile/:profileId/campaign/:campaignId',
+    views : {
+      "levelList" : {
+        templateUrl : 'gameframe/tpl/start.level.list.tpl.html',
+        controller : 'KickstartLevelCtrl'
+      }
+    }
+  })
+
+  .state('kickstart.profile.campaign.level.game', {
+    url : 'campaign/:campaignId/level/:levelId',
+    templateUrl : '',
+    controller : 'KickstartGameLoaderCtrl'
+  })
+
+  ;
+
 }])
 
-/**
- * And of course we define a controller for our route.
- */
-.controller( 'KickstartProfileCtrl', ['$scope', '$stateParams', 'profiles', function ( $scope, $stateParams, profiles ) {
+.controller( 'KickstartBaseCtrl', ['$scope', '$stateParams', 'profiles', 
+  function ( $scope, $stateParams, profiles ) {
     $scope.profiles = profiles.list();
+
+    // all functions to control game area of layout
+    $scope.selectLevel = function (level) {
+        $scope.selectedLevel = level;
+    };
+
+    $scope.setAiCode = function (code) {
+        $scope.aiCode = code;
+    };
+
+    $scope.setGameCanvas = function (canvas) {
+        $scope.gameCanvas = canvas;
+    };
+
+    $scope.startLevel = function () {
+        if ($scope.selectedLevel) {
+            // start starts new game for canvas or if game is going on, 
+            // re-starts it and earlier game will be aborted
+            $scope.selectedLevel.start($scope.aiCode, $scope.gameCanvasEl[0]).win(function () {
+                console.log("You won!");
+            }).lose(function() {
+                console.log("You lose!");
+            }).abort(function () {
+                console.log("Aborted game.");
+            });
+        }
+    };
+
+    $scope.stopLevel = function () {
+        $scope.selectedLevel.stop();
+    };
+
+    // restart game if code is changed
+    $scope.$watch('aiCode', function (newVal) {     
+        $scope.startLevel();
+    });
+
+}])
+
+.controller( 'KickstartProfileCtrl', ['$scope', '$stateParams', 'profiles', 
+  function ( $scope, $stateParams, profiles ) {
 
     $scope.addProfile = function (name) { 
         profiles.add(name);
@@ -46,52 +118,25 @@ angular.module( 'gameframe.kickstart', [
     };
 }])
 
-.controller( 'KickstartCampaignCtrl', ['$scope', '$stateParams', 'campaigns', function ( $scope, $stateParams, campaigns ) {
+.controller( 'KickstartCampaignCtrl', ['$scope', '$stateParams', 'campaigns', 'profiles', 
+  function ( $scope, $stateParams, campaigns, profiles ) {
     var profileId = $stateParams.profileId;
     $scope.selectedProfile = profiles.get(profileId);
     $scope.campaigns = campaigns.list($scope.selectedProfile);
+}])
 
-    /**
-     * Select campaign related callbacks
-     */ 
-    $scope.selectCampaign = function (campaign) {
-        $scope.selectedCampaign = campaigns.load(campaign);
-    };
-    $scope.$watch('selectedCampaign', function () {
-        if ($scope.selectedCampaign) {
-            $scope.levels = $scope.selectedCampaign.levels();
-        }
-    });
+.controller( 'KickstartLevelCtrl', ['$scope', '$stateParams', 'campaigns', 
+  function ( $scope, $stateParams, campaigns ) {
+    var campaignId = $stateParams.campaignId;
+    $scope.selectedCampaign = campaigns.load(campaignId);
+    $scope.levels = $scope.selectedCampaign.levels();
+}])
 
-    /**
-     * Start / end level etc.
-     */
-    $scope.selectLevel = function (level) {
-        $scope.selectedLevel = $scope.selectedCampaign.load(level);
-        $scope.aiCode = $scope.selectedProfile.getLevelCode(level);
-    };
-
-    $scope.startLevel = function () {
-        if ($scope.selectedLevel) {
-            // start starts new game for canvas or if game is going on, 
-            // re-starts it and earlier game will be aborted
-            $scope.selectedLevel.start($scope.aiCode, $scope.gameCanvas[0]).win(function () {
-                console.log("You won!");
-            }).lose(function() {
-                console.log("You lose!");
-            }).abort(function () {
-                console.log("Aborted game.");
-            });
-        }
-    };
-    $scope.stopLevel = function () {
-        $scope.selectedLevel.stop();
-    };
-
-    // restart game if code is changed
-    $scope.$watch('aiCode', function (newVal) {     
-        $scope.startLevel();
-    });
+.controller( 'KickstartGameLoaderCtrl', ['$scope', '$stateParams', 
+  function ( $scope, $stateParams ) {
+    var levelId = $stateParams.levelId;
+    $scope.selectLevel($scope.selectedCampaign.load(levelId));
+    $scope.setAiCode($scope.selectedProfile.getLevelCode(levelId));
 }])
 
 ;

@@ -1,0 +1,7 @@
+<div class="selectPlayer col-sm-4">
+	<h1>Player:</h1>
+	<div ng-repeat="profile in profiles">
+		<a ui-sref="kickstart.profile.campaign({profileId : profile})">{{profile}}</a>
+	</div>
+</div>
+<div ui-view="campaignList"></div>

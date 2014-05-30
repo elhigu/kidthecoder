@@ -1,0 +1,11 @@
+<div class="col-sm-4">	
+	Playing: {{selectedCampaign.name()}} </br>
+	Show levels according to status...
+
+	<h3>Levels:</h3>
+	<div ng-repeat="level in levels">
+		<a ui-sref="kickstart.profile.campaign.level.game({ levelId : level })">{{level}}</a>
+	</div>
+</div>
+<!-- dummy view -->
+<ui-view />

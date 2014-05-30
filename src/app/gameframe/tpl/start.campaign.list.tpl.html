@@ -1,0 +1,9 @@
+<div class="col-sm-4">
+	{{selectedProfile}}
+	<a ui-sref="kickstart.profile">Log out</a>
+	<h2>Campaign:</h2>
+	<div ng-repeat="campaign in campaigns">
+		<a ui-sref="kickstart.profile.campaign.level({ campaignId : campaign })">{{campaign}}</a>
+	</div>
+</div>
+<div ui-view="levelList"></div>

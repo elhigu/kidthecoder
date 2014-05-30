@@ -1,0 +1,19 @@
+<div class="container">
+	<div ui-view="profileList" class="row"></div>
+	<div class="row" ng-show="selectedLevel">
+		<div class="col-sm-6">
+			Add tab to switch between block and code editor
+			<textarea rows="20"
+				class="form-control" 
+				ng-model="aiCode">
+			</textarea>
+		</div>
+		<div class="col-sm-6">
+			<canvas style="width: 100%; border: 1px solid black;" 
+				width="800" height="400" 
+				id="canvas" 
+				ng-scope-element="gameCanvasEl">
+			</canvas>
+		</div>
+	</div>
+</div>
