@@ -71,6 +71,7 @@ angular.module( 'gameframe.kickstart', [
 
     $scope.setAiCode = function (code) {
         $scope.aiCode = code;
+        $scope.startLevel();
     };
 
     $scope.setGameCanvas = function (canvas) {
@@ -78,6 +79,11 @@ angular.module( 'gameframe.kickstart', [
     };
 
     $scope.startLevel = function () {
+        if (!$scope.gameCanvasEl) {
+          console.log("Canvas not ready! Make this work reasonably... this is a mess.");
+          return;
+        }
+
         if ($scope.selectedLevel) {
             // start starts new game for canvas or if game is going on, 
             // re-starts it and earlier game will be aborted
@@ -96,8 +102,10 @@ angular.module( 'gameframe.kickstart', [
     };
 
     // restart game if code is changed
-    $scope.$watch('aiCode', function (newVal) {     
-        $scope.startLevel();
+    $scope.$watch('aiCode', function (oldVal, newVal) {     
+        if (oldVal != newVal) {
+          $scope.startLevel();
+        }
     });
 
 }])
