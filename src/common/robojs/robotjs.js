@@ -45,11 +45,16 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
             _robots: {},
             _explosions: [],
             _ctx: null,
-            
-            init: function(ctx, workers) {
+            _iterations: 0,
+
+            init: function(ctx, workers, maxIterations) {
                 var battle_manager = this;
                 battle_manager._ctx = ctx;
-                
+                if (!maxIterations) {
+                    maxIterations = 0;
+                }
+                battle_manager._maxIterations = maxIterations;
+
                 var postMessage = function (robot_id, msg) {
                     battle_manager._receive(robot_id, msg);
                 };
@@ -133,9 +138,31 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                 battle_manager._draw();
             },
             
+
+            _checkEndConditions : function () {
+                if (this._maxIterations > 0 && this._iterations > this._maxIterations) {
+                    this.loseCb();
+                    return true;
+                }
+                if (this._youLose) {
+                    this.loseCb();
+                    return true;
+                }
+                if (_.keys(this._robots).length === 1) {
+                    this.winCb();
+                    return true;
+                }
+                return false;
+            },
+
             _update: function () {
                 var battle_manager = this;
+                battle_manager._iterations += 1;
                 
+                if (battle_manager._checkEndConditions()) {
+                    this.stop();
+                }
+
                 _.each(battle_manager._robots, function (robot) {
                     if(robot["health"]<=0) {
                         delete battle_manager._robots[robot.id];
@@ -144,6 +171,10 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                             "y": robot["y"],
                             "progress": 1
                         });
+                        console.log("Robot says kaboom:", robot);
+                        if (robot.id === 'robot-0') {
+                             battle_manager._youLose = true;
+                        }
                     }
                 });
                         
@@ -153,8 +184,12 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                     var robot_hit = null;
 
                     if(robot["bullet"]) {
-                        robot["bullet"]["x"] += BULLET_SPEED * Math.cos(Utils.degree2radian(robot["bullet"]["direction"]));
-                        robot["bullet"]["y"] += BULLET_SPEED * Math.sin(Utils.degree2radian(robot["bullet"]["direction"]));
+                        robot["bullet"]["x"] += 
+                            BULLET_SPEED * 
+                            Math.cos(Utils.degree2radian(robot["bullet"]["direction"]));
+                        robot["bullet"]["y"] += 
+                            BULLET_SPEED * 
+                            Math.sin(Utils.degree2radian(robot["bullet"]["direction"]));
                         
                         wall_collide = !Utils.is_point_in_square(
                             robot["bullet"]["x"], robot["bullet"]["y"], 
@@ -411,14 +446,16 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                     }
                 }
             },
+
+            winCb : null,
+            loseCb : null
         };
         
         var robot_list = _.cloneDeep(conf.robots);
         robot_list.unshift('UserBot');
         console.log("Selecting robots:", robot_list);
-        BattleManager.init(ctx, robot_list);
+        BattleManager.init(ctx, robot_list, conf.timeLimit);
         BattleManager.run();
-
         return BattleManager;
     };
 
@@ -426,6 +463,9 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
         init : function (conf) {
             console.log("Going to initialize robot game", conf);
             var theGame = null;
+            var winCb = null;
+            var loseCb = null;
+            var abortCb = null;
 
             // main API for writing more game engines here
             return {
@@ -434,23 +474,36 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                         console.log("Starting game with ", code, canvas);
                         if (theGame !== null) {
                             theGame.stop();
+                            if (abortCb) {
+                                abortCb();
+                            }
                         }
                         theGame = robotGameEngine(canvas, conf);
+                        console.log("theGame", theGame);                        
                     } else {
                         console.log("Failed to start game.");
                     }
                     return this;
                 },
                 stop : function (cb) {
+                    if (theGame !== null) {
+                        theGame.stop();
+                        if (abortCb) {
+                            abortCb();
+                        }
+                    }
                     return this;
                 },
                 win : function (cb) {
-                    return this;                    
+                    theGame.winCb = cb;
+                    return this;
                 },
                 lose : function (cb) {
+                    theGame.loseCb = cb;
                     return this;                    
                 },
                 abort : function (cb) {
+                    theGame.abortCb = cb;
                     return this;
                 }
             };
