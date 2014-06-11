@@ -112,10 +112,21 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
             
             run: function() {
                 var battle_manager = this;
-                
-                this.runInterval = setInterval(function() {
-                    battle_manager._run();
-                }, 5);
+                battle_manager._keepOnRunning = true;
+                battle_manager._startTime = (new Date()).getTime();
+
+                var runLoop = function () {
+                    for (var i = 0; i < 15; i++) {
+                        if (battle_manager._keepOnRunning) {
+                            battle_manager._update();                            
+                        }
+                    }
+                    if (battle_manager._keepOnRunning) {
+                        setTimeout(runLoop, 16);
+                    }
+                    battle_manager._draw();
+                };
+                setTimeout(runLoop, 16);
                 battle_manager._send_all({
                     "signal": "RUN"
                 });
@@ -123,21 +134,11 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 
             stop: function () {
                 var battle_manager = this;
-                if (this.runInterval) {
-                    clearInterval(this.runInterval);
-                    this.runInterval = null;
-                }
+                this._keepOnRunning = false;
                 _.each(battle_manager._robots, function (robot) {
                     delete battle_manager._robots[robot.id];
                 });
             },
-
-            _run: function() {
-                var battle_manager = this;
-                battle_manager._update();
-                battle_manager._draw();
-            },
-            
 
             _checkEndConditions : function () {
                 if (this._maxIterations > 0 && this._iterations > this._maxIterations) {
@@ -157,9 +158,16 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
 
             _update: function () {
                 var battle_manager = this;
+
                 battle_manager._iterations += 1;
+                if (battle_manager._iterations % 10000 === 0) {
+                    var currentMs = (new Date()).getTime();
+                    var msElapsed = currentMs - this._startTime;
+                    console.log("Iterations / second:", this._iterations / msElapsed * 1000);
+                }
                 
                 if (battle_manager._checkEndConditions()) {
+                    console.log("Match length:", this._iterations);
                     this.stop();
                 }
 
@@ -441,7 +449,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                         }
                         explosion_img = ctx.explosion_images[parseInt(explosion["progress"])];
                         battle_manager._ctx.drawImage(explosion_img, explosion["x"]-64, explosion["y"]-64, 128, 128);
-                        explosion["progress"]+= 0.1;
+                        explosion["progress"]+= 0.5;
                         battle_manager._explosions.unshift(explosion);
                     }
                 }
