@@ -66,6 +66,9 @@ angular.module( 'gameframe.kickstart', [
 
     // all functions to control game area of layout
     $scope.selectLevel = function (level) {
+        if ($scope.selectedLevel) {
+          $scope.selectedLevel.stop();
+        }
         $scope.selectedLevel = level;
     };
 
@@ -88,11 +91,11 @@ angular.module( 'gameframe.kickstart', [
             // start starts new game for canvas or if game is going on, 
             // re-starts it and earlier game will be aborted
             $scope.selectedLevel.start($scope.aiCode, $scope.gameCanvasEl[0]).win(function () {
-                console.log("You won!");
+                console.log("******** You won ********");
             }).lose(function() {
-                console.log("You lose!");
+                console.log("!!!!!!! You lose !!!!!!!!");
             }).abort(function () {
-                console.log("Aborted game.");
+                console.log("###### Aborted game #####");
             });
         }
     };
@@ -107,12 +110,10 @@ angular.module( 'gameframe.kickstart', [
           $scope.startLevel();
         }
     });
-
 }])
 
 .controller( 'KickstartProfileCtrl', ['$scope', '$stateParams', 'profiles', 
   function ( $scope, $stateParams, profiles ) {
-
     $scope.addProfile = function (name) { 
         profiles.add(name);
     };

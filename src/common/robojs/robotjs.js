@@ -456,6 +456,7 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
             },
 
             winCb : null,
+            abortCb : null,
             loseCb : null
         };
         
@@ -482,8 +483,8 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                         console.log("Starting game with ", code, canvas);
                         if (theGame !== null) {
                             theGame.stop();
-                            if (abortCb) {
-                                abortCb();
+                            if (theGame.abortCb) {
+                                theGame.abortCb();
                             }
                         }
                         theGame = robotGameEngine(canvas, conf);
@@ -496,8 +497,8 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                 stop : function (cb) {
                     if (theGame !== null) {
                         theGame.stop();
-                        if (abortCb) {
-                            abortCb();
+                        if (theGame.abortCb) {
+                            theGame.abortCb();
                         }
                     }
                     return this;
