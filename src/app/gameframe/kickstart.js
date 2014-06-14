@@ -90,8 +90,12 @@ angular.module( 'gameframe.kickstart', [
         if ($scope.selectedLevel) {
             // start starts new game for canvas or if game is going on, 
             // re-starts it and earlier game will be aborted
-            $scope.selectedLevel.start($scope.aiCode, $scope.gameCanvasEl[0]).win(function () {
+            $scope.selectedLevel
+            .start($scope.aiCode, $scope.gameCanvasEl[0]).win(function () {
                 console.log("******** You won ********");
+                // TODO: unlock next level...
+                //       this should not be in controller, but in some service that orchestrate
+                //       engine... I need to design this somehow reasonably..
             }).lose(function() {
                 console.log("!!!!!!! You lose !!!!!!!!");
             }).abort(function () {

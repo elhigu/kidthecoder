@@ -384,6 +384,12 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                         ctx.body = b;
                         ctx.turret = t;
                         ctx.radar = r;
+                        ctx.explosion_images = [];
+                        for (var i = 1; i <= 17; i++) {
+                            var next = new Image();
+                            next.src = "assets/robojs/img/explosion/explosion1-" + i +'.png';
+                            ctx.explosion_images.push(next);
+                        }
                     }
                     
 
@@ -439,16 +445,8 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                     
                     if(explosion["progress"]<=17) {
                         var explosion_img = null;
-                        if (!ctx.explosion_images) {
-                            ctx.explosion_images = [];
-                            for (var i = 1; i <= 17; i++) {
-                                var next = new Image();
-                                next.src = "assets/robojs/img/explosion/explosion1-" + i +'.png';
-                                ctx.explosion_images.push(next);
-                            }
-                        }
                         explosion_img = ctx.explosion_images[parseInt(explosion["progress"])];
-                        battle_manager._ctx.drawImage(explosion_img, explosion["x"]-64, explosion["y"]-64, 128, 128);
+                        battle_manager._ctx.drawImage(explosion_img, explosion["x"]-64, explosion["y"]-64);
                         explosion["progress"]+= 0.5;
                         battle_manager._explosions.unshift(explosion);
                     }

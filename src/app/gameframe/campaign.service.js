@@ -12,21 +12,24 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			engine : "robot",
 			configuration : {
 				robots : ['SittingDuckBot']
-			}
+			},
+			available : true 
 		},
 		{ 
 			name : "level 2",
 			engine : "robot",
 			configuration : {
 				robots : ['TestBot1']				
-			}
+			},
+			available : false
 		},
 		{ 
 			name : "level 3",
 			engine : "robot",
 			configuration : {
 				robots : ['TestBot1','TestBot2','ScanBot']				
-			}
+			},
+			available : false
 		}
 	];
 
@@ -35,8 +38,9 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			return "The only one.";
 		},
 		levels : function () {
-			console.log("Getting level names:", _.pluck(testLevels, 'name'));
-			return _.pluck(testLevels, 'name');
+			var availableLevels = _.pluck(_.filter(testLevels, { available : true }), 'name');
+			console.log("Getting level names:", availableLevels);
+			return availableLevels;
 		},
 		load : function (level) {
 			var levelConf = _.find(testLevels, { name: level});
