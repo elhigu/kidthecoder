@@ -42,9 +42,30 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			console.log("Getting level names:", availableLevels);
 			return availableLevels;
 		},
-		load : function (level) {
-			var levelConf = _.find(testLevels, { name: level});
-			return engines.load(levelConf);
+		loadLevel : function (level) {
+			var levelConf = _.find(testLevels, { name: level });
+			this.loadedLevel = engines.load(levelConf);
+			return !!this.loadedLevel;
+		},
+		getLevelCode : function () {
+			// not sure if it should be stored in profile at all...
+			return this.profile.getLevelCode(this.loadedLevel);
+		},
+		trySolution : function (code, canvas, winCb, loseCb) {
+			var self = this;
+			self.loadedLevel.start(code, canvas)
+			.win(function () {
+
+				// TODO: unlock next nodes in campaign story graph...
+
+				winCb({
+					points: 100,
+					stars: 3
+				});
+			})
+			.lose(function () {
+				loseCb();
+			});
 		}
 	};
 
@@ -55,10 +76,13 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 		list : function (profile) {
 			return _.map(campaignDb, function (camp) { return camp.name(); });
 		},
-		load : function (campaign) {
-			return _.find(campaignDb, function (camp) {
+		load : function (profile, campaign) {
+			// fast hack for now
+			var c =  _.find(campaignDb, function (camp) {
 				return camp.name() == campaign;
 			});
+			c.profile = profile;
+			return c;
 		}
 	};
 }])

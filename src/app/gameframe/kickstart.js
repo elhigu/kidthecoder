@@ -50,26 +50,16 @@ angular.module( 'gameframe.kickstart', [
     }
   })
 
-  .state('kickstart.profile.campaign.level.game', {
-    url : 'campaign/:campaignId/level/:levelId',
-    templateUrl : '',
-    controller : 'KickstartGameLoaderCtrl'
-  })
-
   ;
 
 }])
 
-.controller( 'KickstartBaseCtrl', ['$scope', '$stateParams', 'profiles', 
-  function ( $scope, $stateParams, profiles ) {
+.controller( 'KickstartBaseCtrl', ['$scope', '$stateParams', '$state', 'profiles', 
+  function ( $scope, $stateParams, $state, profiles ) {
     $scope.profiles = profiles.list();
 
-    // all functions to control game area of layout
-    $scope.selectLevel = function (level) {
-        if ($scope.selectedLevel) {
-          $scope.selectedLevel.stop();
-        }
-        $scope.selectedLevel = level;
+    $scope.selectCampaign = function (campaign) {
+        $scope.selectedCampaign = campaign;
     };
 
     $scope.setAiCode = function (code) {
@@ -81,31 +71,34 @@ angular.module( 'gameframe.kickstart', [
         $scope.gameCanvas = canvas;
     };
 
+    $scope.selectLevel = function (levelId) {
+      $scope.selectedCampaign.loadLevel(levelId);
+    };
+
     $scope.startLevel = function () {
         if (!$scope.gameCanvasEl) {
           console.log("Canvas not ready! Make this work reasonably... this is a mess.");
           return;
         }
 
-        if ($scope.selectedLevel) {
-            // start starts new game for canvas or if game is going on, 
-            // re-starts it and earlier game will be aborted
-            $scope.selectedLevel
-            .start($scope.aiCode, $scope.gameCanvasEl[0]).win(function () {
-                console.log("******** You won ********");
-                // TODO: unlock next level...
-                //       this should not be in controller, but in some service that orchestrate
-                //       engine... I need to design this somehow reasonably..
-            }).lose(function() {
-                console.log("!!!!!!! You lose !!!!!!!!");
-            }).abort(function () {
-                console.log("###### Aborted game #####");
-            });
-        }
+        console.log("Starting level!");
+
+        // I really should learn to use promises efectively...
+        // ... some other day, im busy now :)
+        $scope.selectedCampaign.trySolution(
+          $scope.aiCode, 
+          $scope.gameCanvasEl[0],
+          function win(results) {
+            console.log("You win! Results", results);
+          },
+          function lose() {
+            console.log("You lose, try again");
+          }
+        );    
     };
 
     $scope.stopLevel = function () {
-        $scope.selectedLevel.stop();
+        $scope.selectedCampaign.stop();
     };
 
     // restart game if code is changed
@@ -141,15 +134,8 @@ angular.module( 'gameframe.kickstart', [
 .controller( 'KickstartLevelCtrl', ['$scope', '$stateParams', 'campaigns', 
   function ( $scope, $stateParams, campaigns ) {
     var campaignId = $stateParams.campaignId;
-    $scope.selectedCampaign = campaigns.load(campaignId);
+    $scope.selectCampaign(campaigns.load($scope.selectedProfile, campaignId));
     $scope.levels = $scope.selectedCampaign.levels();
-}])
-
-.controller( 'KickstartGameLoaderCtrl', ['$scope', '$stateParams', 
-  function ( $scope, $stateParams ) {
-    var levelId = $stateParams.levelId;
-    $scope.selectLevel($scope.selectedCampaign.load(levelId));
-    $scope.setAiCode($scope.selectedProfile.getLevelCode(levelId));
 }])
 
 ;
