@@ -64,15 +64,20 @@ angular.module( 'gameframe.kickstart', [
 
     $scope.setAiCode = function (code) {
         $scope.aiCode = code;
-        $scope.startLevel();
     };
 
     $scope.setGameCanvas = function (canvas) {
         $scope.gameCanvas = canvas;
     };
 
+    $scope.listLevels = function () {
+      $scope.levels = $scope.selectedCampaign.levels();
+    };
+    
     $scope.selectLevel = function (levelId) {
+      console.log("Loading level!");
       $scope.selectedCampaign.loadLevel(levelId);
+      $scope.setAiCode($scope.selectedCampaign.getLevelCode());
     };
 
     $scope.startLevel = function () {
@@ -90,6 +95,7 @@ angular.module( 'gameframe.kickstart', [
           $scope.gameCanvasEl[0],
           function win(results) {
             console.log("You win! Results", results);
+            $scope.listLevels();
           },
           function lose() {
             console.log("You lose, try again");
@@ -135,7 +141,7 @@ angular.module( 'gameframe.kickstart', [
   function ( $scope, $stateParams, campaigns ) {
     var campaignId = $stateParams.campaignId;
     $scope.selectCampaign(campaigns.load($scope.selectedProfile, campaignId));
-    $scope.levels = $scope.selectedCampaign.levels();
+    $scope.listLevels();
 }])
 
 ;

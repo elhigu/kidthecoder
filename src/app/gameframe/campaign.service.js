@@ -13,7 +13,8 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			configuration : {
 				robots : ['SittingDuckBot']
 			},
-			available : true 
+			available : true,
+			next : 1
 		},
 		{ 
 			name : "level 2",
@@ -21,7 +22,8 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			configuration : {
 				robots : ['TestBot1']				
 			},
-			available : false
+			available : false,
+			next : 2
 		},
 		{ 
 			name : "level 3",
@@ -29,7 +31,8 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			configuration : {
 				robots : ['TestBot1','TestBot2','ScanBot']				
 			},
-			available : false
+			available : false,
+			next : null
 		}
 	];
 
@@ -45,6 +48,7 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 		loadLevel : function (level) {
 			var levelConf = _.find(testLevels, { name: level });
 			this.loadedLevel = engines.load(levelConf);
+			this.loadedLevelConf = levelConf; 
 			return !!this.loadedLevel;
 		},
 		getLevelCode : function () {
@@ -57,6 +61,10 @@ angular.module( 'gameframe.campaigns', ['gameframe.engines'])
 			.win(function () {
 
 				// TODO: unlock next nodes in campaign story graph...
+				//       for now just unlock next level.
+				var nextLevel = testLevels[self.loadedLevelConf.next];
+				nextLevel.available = true;
+				console.log("Enabling next level:", nextLevel);
 
 				winCb({
 					points: 100,
