@@ -54,8 +54,8 @@ angular.module( 'gameframe.kickstart', [
 
 }])
 
-.controller( 'KickstartBaseCtrl', ['$scope', '$stateParams', '$state', 'profiles', 
-  function ( $scope, $stateParams, $state, profiles ) {
+.controller( 'KickstartBaseCtrl', ['$scope', '$stateParams', '$state', '$timeout', 'profiles', 
+  function ( $scope, $stateParams, $state, $timeout, profiles ) {
     $scope.profiles = profiles.list();
 
     $scope.selectCampaign = function (campaign) {
@@ -70,14 +70,14 @@ angular.module( 'gameframe.kickstart', [
         $scope.gameCanvas = canvas;
     };
 
-    $scope.listLevels = function () {
-      $scope.levels = $scope.selectedCampaign.levels();
-    };
-    
     $scope.selectLevel = function (levelId) {
       console.log("Loading level!");
       $scope.selectedCampaign.loadLevel(levelId);
       $scope.setAiCode($scope.selectedCampaign.getLevelCode());
+    };
+
+    $scope.listLevels = function () {
+      $scope.levels = $scope.selectedCampaign.levels();
     };
 
     $scope.startLevel = function () {
@@ -95,7 +95,11 @@ angular.module( 'gameframe.kickstart', [
           $scope.gameCanvasEl[0],
           function win(results) {
             console.log("You win! Results", results);
-            $scope.listLevels();
+            // this callback might not be called from angular scope so we wrap this to 
+            // timeout to enforce digest cycle
+            $timeout(function () {
+              $scope.listLevels();
+            }, 0);
           },
           function lose() {
             console.log("You lose, try again");
