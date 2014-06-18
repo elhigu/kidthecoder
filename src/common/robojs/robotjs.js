@@ -443,9 +443,9 @@ angular.module( 'robojs.engine', ['robojs.robot-db'])
                 for(var e=0; e<battle_manager._explosions.length; e++) {
                     var explosion = battle_manager._explosions.pop();
                     
-                    if(explosion["progress"]<=17) {
+                    if(explosion["progress"]<17) {
                         var explosion_img = null;
-                        explosion_img = ctx.explosion_images[parseInt(explosion["progress"])];
+                        explosion_img = ctx.explosion_images[Math.floor(explosion["progress"])];
                         battle_manager._ctx.drawImage(explosion_img, explosion["x"]-64, explosion["y"]-64);
                         explosion["progress"]+= 0.5;
                         battle_manager._explosions.unshift(explosion);
