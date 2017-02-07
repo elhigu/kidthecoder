@@ -1,4 +1,6 @@
 # Minimal angular application template
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/elhigu/kidthecoder.svg)](https://greenkeeper.io/)
 Based on wonderful ngbp (https://github.com/ngbp/ngbp) template by @joshdmiller 
 
 * Includes Bootstrap3 and angular ui-router
